@@ -1,0 +1,60 @@
+# Circuito-eletronico-
+Circuito eletrônico que identifica temperaturas específicas com sistema de acionamento de motor/buzzer/led. 
+
+const int temperaturaPin = A0;
+const int buzinaPin = 2;
+const int ledPin = 3;
+const int motorPin = 4;
+
+void setup() {
+  pinMode(buzinaPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(motorPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Leitura da temperatura em graus Celsius
+  float temperatura = lerTemperatura();
+
+  // Verifica se a temperatura é igual ou superior a 30°C
+  if (temperatura >= 30) {
+    acionarMotor();
+  } else {
+    desligarMotor();
+  }
+
+  // Verifica se a temperatura ultrapassou 50°C
+  if (temperatura > 50) {
+    alertaEmergencia();
+  } else {
+    desligarAlertaEmergencia();
+  }
+
+  delay(1000); // Aguarda 1 segundo antes de fazer a próxima leitura
+}
+
+float lerTemperatura() {
+  int valorSensor = analogRead(temperaturaPin);
+  float tensao = (valorSensor * 5.0) / 1023.0; // Tensão de referência de 5V no Arduino
+  float temperatura = (tensao - 0.5) * 100; // Conversão para temperatura em graus Celsius
+  return temperatura;
+}
+
+void acionarMotor() {
+  digitalWrite(motorPin, HIGH);
+}
+
+void desligarMotor() {
+  digitalWrite(motorPin, LOW);
+}
+
+void alertaEmergencia() {
+  digitalWrite(ledPin, HIGH);
+  digitalWrite(buzinaPin, HIGH);
+}
+
+void desligarAlertaEmergencia() {
+  digitalWrite(ledPin, LOW);
+  digitalWrite(buzinaPin, LOW);
+}
